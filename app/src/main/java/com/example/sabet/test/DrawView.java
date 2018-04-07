@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.support.annotation.IdRes;
@@ -18,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -60,6 +62,9 @@ public class DrawView extends View implements View.OnTouchListener{
     public void init(Context context) {
 //        root = findViewById(R.id.root);
         paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
         setFocusable(true); // necessary for getting the touch events
         canvas = new Canvas();
         // setting the start point for the balls
@@ -122,161 +127,6 @@ public class DrawView extends View implements View.OnTouchListener{
         ib4.setImageResource(R.drawable.gray_circle);
         ib4.setOnTouchListener(this);
         root.addView(ib4);
-        // declare each ball with the ColorBall class
-        /*colorballs = new ArrayList<ColorBall>();
-        colorballs.add(0,new ColorBall(context, R.drawable.gray_circle, point1,0));
-        colorballs.add(1,new ColorBall(context, R.drawable.gray_circle, point2,1));
-        colorballs.add(2,new ColorBall(context, R.drawable.gray_circle, point3,2));
-        colorballs.add(3,new ColorBall(context, R.drawable.gray_circle, point4,3));*/
-
-    }
-
-    // the method that draws the balls
-    @Override
-    protected void onDraw(Canvas canvas) {
-        // canvas.drawColor(0xFFCCCCCC); //if you want another background color
-
-        paint.setAntiAlias(true);
-        paint.setDither(true);
-        paint.setColor(Color.parseColor("#55000000"));
-        paint.setStyle(Paint.Style.FILL);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-        // mPaint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeWidth(5);
-
-        canvas.drawPaint(paint);
-        paint.setColor(Color.parseColor("#55FFFFFF"));
-
-        /*if (groupId == 1) {
-            canvas.drawRect(point1.x + colorballs.get(0).getWidthOfBall() / 2,
-                    point3.y + colorballs.get(2).getWidthOfBall() / 2, point3.x
-                            + colorballs.get(2).getWidthOfBall() / 2, point1.y
-                            + colorballs.get(0).getWidthOfBall() / 2, paint);
-        } else {
-            canvas.drawRect(point2.x + colorballs.get(1).getWidthOfBall() / 2,
-                    point4.y + colorballs.get(3).getWidthOfBall() / 2, point4.x
-                            + colorballs.get(3).getWidthOfBall() / 2, point2.y
-                            + colorballs.get(1).getWidthOfBall() / 2, paint);
-        }
-        BitmapDrawable mBitmap;
-        mBitmap = new BitmapDrawable();
-
-        // draw the balls on the canvas
-        for (ColorBall ball : colorballs) {
-            canvas.drawBitmap(ball.getBitmap(), ball.getX(), ball.getY(),
-                    new Paint());
-        }*/
-    }
-    /*
-    // events when touching the screen
-    public boolean onTouchEvent(MotionEvent event) {
-        int eventaction = event.getAction();
-
-        int X = (int) event.getX();
-        int Y = (int) event.getY();
-
-        switch (eventaction) {
-
-            case MotionEvent.ACTION_DOWN: // touch down so check if the finger is on
-                // a ball
-                balID = -1;
-                startMovePoint = new Point(X,Y);
-                for (ColorBall ball : colorballs) {
-                    // check if inside the bounds of the ball (circle)
-                    // get the center for the ball
-                    int centerX = ball.getX() + ball.getWidthOfBall();
-                    int centerY = ball.getY() + ball.getHeightOfBall();
-                    paint.setColor(Color.CYAN);
-                    // calculate the radius from the touch to the center of the ball
-                    double radCircle = Math
-                            .sqrt((double) (((centerX - X) * (centerX - X)) + (centerY - Y)
-                                    * (centerY - Y)));
-
-                    if (radCircle < ball.getWidthOfBall()) {
-
-                        balID = ball.getID();
-                        if (balID == 1 || balID == 3) {
-                            groupId = 2;
-                            canvas.drawRect(point1.x, point3.y, point3.x, point1.y,
-                                    paint);
-                        } else {
-                            groupId = 1;
-                            canvas.drawRect(point2.x, point4.y, point4.x, point2.y,
-                                    paint);
-                        }
-                        invalidate();
-                        break;
-                    }
-                    invalidate();
-                }
-
-                break;
-
-            case MotionEvent.ACTION_MOVE: // touch drag with the ball
-                // move the balls the same as the finger
-                if (balID > -1) {
-                    colorballs.get(balID).setX(X);
-                    colorballs.get(balID).setY(Y);
-
-                    paint.setColor(Color.CYAN);
-
-                    if (groupId == 1) {
-                        colorballs.get(1).setX(colorballs.get(0).getX());
-                        colorballs.get(1).setY(colorballs.get(2).getY());
-                        colorballs.get(3).setX(colorballs.get(2).getX());
-                        colorballs.get(3).setY(colorballs.get(0).getY());
-                        canvas.drawRect(point1.x, point3.y, point3.x, point1.y,
-                                paint);
-                    } else {
-                        colorballs.get(0).setX(colorballs.get(1).getX());
-                        colorballs.get(0).setY(colorballs.get(3).getY());
-                        colorballs.get(2).setX(colorballs.get(3).getX());
-                        colorballs.get(2).setY(colorballs.get(1).getY());
-                        canvas.drawRect(point2.x, point4.y, point4.x, point2.y,
-                                paint);
-                    }
-
-                    invalidate();
-                }else{
-                    if (startMovePoint!=null) {
-                        paint.setColor(Color.CYAN);
-                        int diffX = X - startMovePoint.x;
-                        int diffY = Y - startMovePoint.y;
-                        startMovePoint.x = X;
-                        startMovePoint.y = Y;
-                        colorballs.get(0).addX(diffX);
-                        colorballs.get(1).addX(diffX);
-                        colorballs.get(2).addX(diffX);
-                        colorballs.get(3).addX(diffX);
-                        colorballs.get(0).addY(diffY);
-                        colorballs.get(1).addY(diffY);
-                        colorballs.get(2).addY(diffY);
-                        colorballs.get(3).addY(diffY);
-                        if(groupId==1)
-                            canvas.drawRect(point1.x, point3.y, point3.x, point1.y,
-                                    paint);
-                        else
-                            canvas.drawRect(point2.x, point4.y, point4.x, point2.y,
-                                    paint);
-                        invalidate();
-                    }
-                }
-
-                break;
-
-            case MotionEvent.ACTION_UP:
-                // touch drop - just do things here after dropping
-
-                break;
-        }
-        // redraw the canvas
-        invalidate();
-        return true;
-
-    }*/
-
-    public void shade_region_between_points() {
-        canvas.drawRect(point1.x, point3.y, point3.x, point1.y, paint);
     }
 
     @Override
@@ -295,10 +145,117 @@ public class DrawView extends View implements View.OnTouchListener{
                 layoutParams.rightMargin = -250;
                 layoutParams.bottomMargin = -250;
                 v.setLayoutParams(layoutParams);
+                //joy
+                if(v.getId()==R.id.ib1){
+                    point1.x= (int) v.getX();
+                    point1.y= (int) v.getY();
+
+                    //point 2 and point 4 also change
+                    RelativeLayout.LayoutParams layoutParamsP2 = (RelativeLayout.LayoutParams) ib2.getLayoutParams();
+                    //layoutParams.leftMargin = startMovePoint.x - _xDelta;
+                    layoutParamsP2.topMargin = startMovePoint.y - _yDelta;
+                    layoutParamsP2.rightMargin = -250;
+                    layoutParamsP2.bottomMargin = -250;
+                    ib2.setLayoutParams(layoutParamsP2);
+                    point2.x= (int) ib2.getX();
+                    point2.y= (int) ib2.getY();
+
+                    RelativeLayout.LayoutParams layoutParamsP4 = (RelativeLayout.LayoutParams) ib4.getLayoutParams();
+                    layoutParamsP4.leftMargin = startMovePoint.x - _xDelta;
+                    //layoutParamsP4.topMargin = startMovePoint.y - _yDelta;
+                    layoutParamsP4.rightMargin = -250;
+                    layoutParamsP4.bottomMargin = -250;
+                    ib4.setLayoutParams(layoutParamsP4);
+                    point4.x= (int) ib4.getX();
+                    point4.y= (int) ib4.getY();
+
+                    groupId=1;
+
+                }else if(v.getId()==R.id.ib2){
+                    point2.x= (int) v.getX();
+                    point2.y= (int) v.getY();
+
+                    //point 1 and point 3 also change
+                    RelativeLayout.LayoutParams layoutParamsP1 = (RelativeLayout.LayoutParams) ib1.getLayoutParams();
+                    //layoutParams.leftMargin = startMovePoint.x - _xDelta;
+                    layoutParamsP1.topMargin = startMovePoint.y - _yDelta;
+                    layoutParamsP1.rightMargin = -250;
+                    layoutParamsP1.bottomMargin = -250;
+                    ib1.setLayoutParams(layoutParamsP1);
+                    point1.x= (int) ib1.getX();
+                    point1.y= (int) ib1.getY();
+
+                    RelativeLayout.LayoutParams layoutParamsP3 = (RelativeLayout.LayoutParams) ib3.getLayoutParams();
+                    layoutParamsP3.leftMargin = startMovePoint.x - _xDelta;
+                    //layoutParamsP4.topMargin = startMovePoint.y - _yDelta;
+                    layoutParamsP3.rightMargin = -250;
+                    layoutParamsP3.bottomMargin = -250;
+                    ib3.setLayoutParams(layoutParamsP3);
+                    point3.x= (int) ib3.getX();
+                    point3.y= (int) ib3.getY();
+
+                    groupId=2;
+
+                }else if(v.getId()==R.id.ib3){
+                    point3.x= (int) v.getX();
+                    point3.y= (int) v.getY();
+
+                    //point 2 and point 4 also change
+                    RelativeLayout.LayoutParams layoutParamsP2 = (RelativeLayout.LayoutParams) ib2.getLayoutParams();
+                    layoutParamsP2.leftMargin = startMovePoint.x - _xDelta;
+                    //layoutParamsP2.topMargin = startMovePoint.y - _yDelta;
+                    layoutParamsP2.rightMargin = -250;
+                    layoutParamsP2.bottomMargin = -250;
+                    ib2.setLayoutParams(layoutParamsP2);
+                    point2.x= (int) ib2.getX();
+                    point2.y= (int) ib2.getY();
+
+                    RelativeLayout.LayoutParams layoutParamsP4 = (RelativeLayout.LayoutParams) ib4.getLayoutParams();
+                    //layoutParamsP4.leftMargin = startMovePoint.x - _xDelta;
+                    layoutParamsP4.topMargin = startMovePoint.y - _yDelta;
+                    layoutParamsP4.rightMargin = -250;
+                    layoutParamsP4.bottomMargin = -250;
+                    ib4.setLayoutParams(layoutParamsP4);
+                    point4.x= (int) ib4.getX();
+                    point4.y= (int) ib4.getY();
+
+                    groupId=1;
+
+                }else {
+                    point4.x= (int) v.getX();
+                    point4.y= (int) v.getY();
+
+                    //point 1 and point 3 also change
+                    RelativeLayout.LayoutParams layoutParamsP1 = (RelativeLayout.LayoutParams) ib1.getLayoutParams();
+                    layoutParamsP1.leftMargin = startMovePoint.x - _xDelta;
+                    //layoutParamsP1.topMargin = startMovePoint.y - _yDelta;
+                    layoutParamsP1.rightMargin = -250;
+                    layoutParamsP1.bottomMargin = -250;
+                    ib1.setLayoutParams(layoutParamsP1);
+                    point1.x= (int) ib1.getX();
+                    point1.y= (int) ib1.getY();
+
+                    RelativeLayout.LayoutParams layoutParamsP3 = (RelativeLayout.LayoutParams) ib3.getLayoutParams();
+                    //layoutParamsP3.leftMargin = startMovePoint.x - _xDelta;
+                    layoutParamsP3.topMargin = startMovePoint.y - _yDelta;
+                    layoutParamsP3.rightMargin = -250;
+                    layoutParamsP3.bottomMargin = -250;
+                    ib3.setLayoutParams(layoutParamsP3);
+                    point3.x= (int) ib3.getX();
+                    point3.y= (int) ib3.getY();
+                    groupId=2;
+                }
                 break;
             default:break;
         }
         invalidate();
         return true;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        Rect rect = new Rect(point1.x+50,point1.y+50,point3.x+50,point3.y+50);
+        canvas.drawRect(rect,paint);
     }
 }

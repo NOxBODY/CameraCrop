@@ -3,13 +3,18 @@ package com.example.sabet.test;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
@@ -21,10 +26,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -89,13 +96,14 @@ public class MainActivity extends AppCompatActivity implements
         }
     };
     DrawView drawView;
+    static Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         drawView = findViewById(R.id.drawView);
-        drawView.root = (RelativeLayout) findViewById(R.id.root);
+        drawView.root = findViewById(R.id.root);
         drawView.init(this);
         mCameraView = (CameraView) findViewById(R.id.camera);
         if (mCameraView != null) {
@@ -111,6 +119,9 @@ public class MainActivity extends AppCompatActivity implements
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
         }
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        Log.wtf("Screen","W: "+dm.widthPixels+" H: "+dm.heightPixels);
     }
 
     @Override
@@ -242,7 +253,15 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, "onPictureTaken " + data.length);
             Toast.makeText(cameraView.getContext(), R.string.picture_taken, Toast.LENGTH_SHORT)
                     .show();
-            getBackgroundHandler().post(new Runnable() {
+            Log.wtf("DrawView","W: "+drawView.getWidth()+" H: "+drawView.getHeight());
+            Log.wtf("CameraView","W: "+mCameraView.getWidth()+" H: "+mCameraView.getHeight());
+            bitmap = BitmapFactory.decodeByteArray(data,0, data.length);
+            Intent i = new Intent(getApplicationContext(),ShowActivity.class);
+            startActivity(i);
+
+//            imageView.setVisibility(View.VISIBLE);
+
+            /*getBackgroundHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -265,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
                 }
-            });
+            });*/
         }
 
     };
