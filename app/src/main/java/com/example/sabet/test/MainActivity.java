@@ -49,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
+import java.util.logging.Logger;
 
 
 /**
@@ -263,55 +264,16 @@ public class MainActivity extends AppCompatActivity implements
             Log.wtf("CameraView","W: "+mCameraView.getWidth()+" H: "+mCameraView.getHeight());
             Bitmap temp = BitmapFactory.decodeByteArray(data,0, data.length);
             Log.wtf("bitmap","W: "+temp.getWidth()+" H: "+temp.getHeight());
-//            temp = temp.copy(Bitmap.Config.ARGB_8888,true);
             float scale = (float) mCameraView.getWidth()/temp.getWidth();
             Log.wtf("scale",""+scale);
-            Rect rect = new Rect((int) ((drawView.point1.x+50)/scale), (int) ((drawView.point1.y+50)/scale),
-                    (int)(Math.abs(drawView.point1.x-drawView.point2.x)/scale),(int)(Math.abs(drawView.point1.y-
-                    drawView.point4.y)/scale));
+            Rect rect = new Rect((int) ((drawView.point1.x+50)/scale),  (int) ((drawView.point1.y+50)/scale),
+                    (int)((drawView.point3.x+50)/scale),(int)((drawView.point3.y+50)/scale));
             Log.wtf("rect","W: "+rect.width()+" H: "+rect.height());
             bitmap = Bitmap.createBitmap(temp,rect.left,rect.top,rect.width(),rect.height());
-            /*Rect dst = new Rect(0,0,rect.width(),rect.height());
-            bitmap = Bitmap.createBitmap(rect.width(),rect.height(), Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(bitmap);
-            BitmapShader shader = new BitmapShader(temp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            Matrix matrix = new Matrix();
-            matrix.postTranslate(rect.left,rect.top);
-            shader.setLocalMatrix(matrix);
-            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-            p.setShader(shader);
-            c.drawRect(dst,p);*/
+
             Intent i = new Intent(getApplicationContext(),ShowActivity.class);
             startActivity(i);
-
-//            imageView.setVisibility(View.VISIBLE);
-
-            /*getBackgroundHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                            "picture.jpg");
-                    Log.wtf("PATH",file.getAbsolutePath());
-                    OutputStream os = null;
-                    try {
-                        os = new FileOutputStream(file);
-                        os.write(data);
-                        os.close();
-                    } catch (IOException e) {
-                        Log.w(TAG, "Cannot write to " + file, e);
-                    } finally {
-                        if (os != null) {
-                            try {
-                                os.close();
-                            } catch (IOException e) {
-                                // Ignore
-                            }
-                        }
-                    }
-                }
-            });*/
         }
-
     };
 
     public static class ConfirmationDialogFragment extends DialogFragment {
