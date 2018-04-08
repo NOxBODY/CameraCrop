@@ -9,6 +9,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Shader;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -255,7 +261,26 @@ public class MainActivity extends AppCompatActivity implements
                     .show();
             Log.wtf("DrawView","W: "+drawView.getWidth()+" H: "+drawView.getHeight());
             Log.wtf("CameraView","W: "+mCameraView.getWidth()+" H: "+mCameraView.getHeight());
-            bitmap = BitmapFactory.decodeByteArray(data,0, data.length);
+            Bitmap temp = BitmapFactory.decodeByteArray(data,0, data.length);
+            Log.wtf("bitmap","W: "+temp.getWidth()+" H: "+temp.getHeight());
+//            temp = temp.copy(Bitmap.Config.ARGB_8888,true);
+            float scale = (float) mCameraView.getWidth()/temp.getWidth();
+            Log.wtf("scale",""+scale);
+            Rect rect = new Rect((int) ((drawView.point1.x+50)/scale), (int) ((drawView.point1.y+50)/scale),
+                    (int)(Math.abs(drawView.point1.x-drawView.point2.x)/scale),(int)(Math.abs(drawView.point1.y-
+                    drawView.point4.y)/scale));
+            Log.wtf("rect","W: "+rect.width()+" H: "+rect.height());
+            bitmap = Bitmap.createBitmap(temp,rect.left,rect.top,rect.width(),rect.height());
+            /*Rect dst = new Rect(0,0,rect.width(),rect.height());
+            bitmap = Bitmap.createBitmap(rect.width(),rect.height(), Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bitmap);
+            BitmapShader shader = new BitmapShader(temp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            Matrix matrix = new Matrix();
+            matrix.postTranslate(rect.left,rect.top);
+            shader.setLocalMatrix(matrix);
+            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+            p.setShader(shader);
+            c.drawRect(dst,p);*/
             Intent i = new Intent(getApplicationContext(),ShowActivity.class);
             startActivity(i);
 

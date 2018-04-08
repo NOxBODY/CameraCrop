@@ -28,8 +28,8 @@ import java.util.ArrayList;
 public class DrawView extends View implements View.OnTouchListener{
     private int _xDelta;
     private int _yDelta;
-    public static Point point1, point3;
-    public static Point point2, point4;
+    public Point point1, point3;
+    public Point point2, point4;
     Point startMovePoint;
     public ImageView ib1,ib2,ib3,ib4;
     RelativeLayout root;
