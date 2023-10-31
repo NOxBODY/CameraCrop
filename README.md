@@ -1,1 +1,1 @@
-# CameraCrop is under development
+# CameraCrop is not being maintained
